@@ -93,7 +93,6 @@ let start = async () => {
         console.log("==> Waiting for cookie selector")
         
         await page.waitForSelector(btPage.cookieBanner)
-        await page.click(btPage.cookieBanner)
 
         console.log("==> Found cookie selector")
 
