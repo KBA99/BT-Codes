@@ -5,6 +5,17 @@ import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
+const emails = "./emails.txt";
+let successEnter = (email) => {
+    fs.appendFile(emails, `${email}}\n`, function (err) {
+        if (err) console.log(err);
+    });
+    console.log('\x1b[32m%s\x1b[0m', `${email} successfully entered`);
+};
+
+
+
+
 
 // Add adblocker plugin to block all ads and trackers (saves bandwidth)
 // That's it, the rest is puppeteer usage as normal 😊
@@ -34,6 +45,7 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
         waitUntil: 'domcontentloaded'
     });
 
+    await page.waitForSelector('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2')
     cookieModal = await page.$('#cookieModal')
     
 
