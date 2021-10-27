@@ -6,13 +6,26 @@ puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const emails = "./emails.txt";
+const successfullyEntered = "./successfullyEntered.txt";
+
 let successEnter = (email) => {
-    fs.appendFile(emails, `${email}}\n`, function (err) {
+    fs.appendFile(successfullyEntered, `${email}}\n`, function (err) {
         if (err) console.log(err);
     });
     console.log('\x1b[32m%s\x1b[0m', `${email} successfully entered`);
 };
 
+try {
+    const emails = fs.readFileSync("./emails.txt", "utf8");
+    fs.appendFile(success, `\n${new Date()}\n`, function (err) {
+        if (err) console.log(err);
+    });
+    console.log(`Appended date ${new Date()} to Success file`)
+    
+    let allData = emails.split("\n");
+    } catch (error) {
+        console.log(error);
+    }
 
 
 
@@ -41,12 +54,17 @@ let successEnter = (email) => {
 */
 
 
-    await page.goto('https://shop.bt.com/forms/playstation-5', {
-        waitUntil: 'domcontentloaded'
-    });
+    await page.goto('https://shop.bt.com/forms/playstation-5');
 
-    await page.waitForSelector('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2')
-    cookieModal = await page.$('#cookieModal')
+    await page.waitForSelector('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2');
+
+    await page.click('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2')
+
+    await page.waitForSelector('#btnCookiePreference')
+    await page.click('#btnCookiePreference')
+
+
+    // cookieModal = await page.$('#cookieModal')
     
 
     console.timeEnd('Request time:')
