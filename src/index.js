@@ -1,12 +1,13 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
+import fs from 'fs'
 
 puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
-const emails = "./emails.txt";
-const successfullyEntered = "./successfullyEntered.txt";
+const emails = "src/emails.txt";
+const successfullyEntered = "src/successfullyEntered.txt";
 
 let successEnter = (email) => {
     fs.appendFile(successfullyEntered, `${email}}\n`, function (err) {
@@ -16,13 +17,14 @@ let successEnter = (email) => {
 };
 
 try {
-    const emails = fs.readFileSync("./emails.txt", "utf8");
-    fs.appendFile(success, `\n${new Date()}\n`, function (err) {
+    const importedEmails = fs.readFileSync(emails, "utf8");
+    fs.appendFile(successfullyEntered, `\n${new Date()}\n`, function (err) {
         if (err) console.log(err);
     });
     console.log(`Appended date ${new Date()} to Success file`)
     
-    let allData = emails.split("\n");
+    let allData = importedEmails.split("\n");
+    console.log(allData)
     } catch (error) {
         console.log(error);
     }
@@ -33,10 +35,12 @@ try {
 // Add adblocker plugin to block all ads and trackers (saves bandwidth)
 // That's it, the rest is puppeteer usage as normal 😊
     console.time('Request time:')
-    puppeteer.launch({ headless: false }).then(async browser => {
+    puppeteer.launch({ headless: false })
+    .then(async browser => {
 
     const page = await browser.newPage()
     await page.setViewport({ width: 800, height: 600 })
+    const navigationPromise = page.waitForNavigation()
 
 
   /* Tests
@@ -56,15 +60,16 @@ try {
 
     await page.goto('https://shop.bt.com/forms/playstation-5');
 
-    await page.waitForSelector('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2');
+    // await page.waitForSelector('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2');
 
-    await page.click('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2')
+    // await page.click('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2')
 
-    await page.waitForSelector('#btnCookiePreference')
-    await page.click('#btnCookiePreference')
+    // await page.waitForSelector('#btnCookiePreference')
+    // await page.click('#btnCookiePreference')
 
 
     // cookieModal = await page.$('#cookieModal')
+
     
 
     console.timeEnd('Request time:')
