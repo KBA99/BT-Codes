@@ -93,7 +93,11 @@ let start = async () => {
 
         await page.click(btPage.cookieBanner)
 
-
+        
+        await page.waitForSelector(btPage.emailAddress)
+        await page.type(btPage.emailAddress, emailAddress)
+        await page.click(btPage.submit)
+        
 
         console.timeEnd('Request time:')
 
