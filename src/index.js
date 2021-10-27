@@ -71,23 +71,18 @@ let start = async () => {
 
     console.log("==> Navigating to Page")
 
-        await page.goto('https://shop.bt.com/forms/playstation-5');
+    await page.goto("https://shop.bt.com/forms/playstation-5")
 
-        // await page.waitForSelector('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2');
-
-        // await page.click('.modalContainer > .innerContainer > .container > #spanAboutCookiesOk > .button2')
-
-        // await page.waitForSelector('#btnCookiePreference')
-        // await page.click('#btnCookiePreference')
-
-
-        // cookieModal = await page.$('#cookieModal')
+    
+    console.log("==> On BT Page")
+    
+    await page.setViewport({ width: 1280, height: 1306 })
 
         console.log("==> Waiting for cookie selector")
 
 
         await page.waitForSelector('.button2')
-        // await page.click('.button2')
+        await page.click('.button2')
 
         console.log("==> Found cookie selector")
 
