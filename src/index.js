@@ -2,9 +2,13 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import fs from 'fs'
 import dotenv from 'dotenv'
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 dotenv.config()
 
 puppeteer.use(StealthPlugin())
+
+let openBrowsers = 0
+const BROWSER_LIMIT = 5
 
 const emails = "src/emails.txt";
 const successfullyEntered = "src/successfullyEntered.txt";
@@ -19,11 +23,11 @@ const btPage = {
     cookieBanner: '#spanAboutCookiesOk > button'
 }
 
-const enterSuccessEmail = (email) => {
+const enterSuccessEmail = (email, index) => {
     fs.appendFile(successfullyEntered, `${email}\n`, function (err) {
         if (err) console.log(err);
     });
-    console.log('\x1b[32m%s\x1b[0m', `${email} successfully entered`);
+    console.log('\x1b[32m%s\x1b[0m', `${index}: ${email} successfully entered`);
 };
 
 const importEmails = async ()=> {
@@ -64,7 +68,9 @@ const randomProxyGenerator =() => {
 }
 
 
-const startBot = async (email, proxy) => {
+const startBot = async (email, proxy, index) => {
+    console.time(`Thread ${index} Request time:`)
+
     const split_proxy = proxy.split(":")
 
     const proxyHostPort = `--proxy-server=${split_proxy[0]}:${split_proxy[1]}`
@@ -74,14 +80,12 @@ const startBot = async (email, proxy) => {
 
 
     console.log("==> Starting Browser")
-
-    console.log("==> Adding Proxy")
-
     const browser = await puppeteer.launch({
-        headless: true, slowMo: 50,
+        headless: false, slowMo: 50,
         args: [proxyHostPort]
     });
 
+    console.log("==> Adding Proxy")
     const page = await browser.newPage();
         await page.authenticate({
         username: proxyUserName,
@@ -126,28 +130,23 @@ const startBot = async (email, proxy) => {
     await page.click(btPage.submit)
     console.log("==> Email submitted")
     
-    enterSuccessEmail(email)
+    enterSuccessEmail(email, index)
     await browser.close()
 
-    }
+    console.timeEnd(`Thread ${index} Request time:`)
+    console.log('\n')
+}
 
 
 const btStart = async () => {
-    
-
     await importEmails();
     await importProxies();
 
     for (let index = 0; index < allData.length; index++) {
         const email = allData[index]
-        // FIXME: timer
-        // console.time('Request time:')
-        await startBot(email, randomProxyGenerator())               
-        // console.timeEnd('Request time:')
-
+        await startBot(email, randomProxyGenerator(), index)               
     }
 }
-
 
 
 btStart()
