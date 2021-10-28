@@ -20,7 +20,7 @@ const btPage = {
 }
 
 const enterSuccessEmail = (email) => {
-    fs.appendFile(successfullyEntered, `${email}}\n`, function (err) {
+    fs.appendFile(successfullyEntered, `${email}\n`, function (err) {
         if (err) console.log(err);
     });
     console.log('\x1b[32m%s\x1b[0m', `${email} successfully entered`);
