@@ -10,6 +10,9 @@ const emails = "src/emails.txt";
 const successfullyEntered = "src/successfullyEntered.txt";
 const proxies = "src/proxies.txt"
 
+let allData = []
+let allProxies = []
+
 const btPage = {
     emailAddress: "#EmailAddress",
     submit: "#contentbody > div > div > form > div.button-bar.bottom.float-right > button",
@@ -30,8 +33,8 @@ try {
     });
     console.log(`Appended date ${new Date()} to Success file`)
     
-    let allData = importedEmails.split("\n");
-    console.log(allData)
+    allData = importedEmails.split("\n");
+    // console.log(allData)
     } catch (error) {
         console.log(error);
     }
@@ -40,8 +43,8 @@ try {
     const importedProxies = fs.readFileSync(proxies, "utf8");
     console.log(`Proxies imported`)
     
-    let allProxies = importedProxies.split("\n");
-    console.log(allProxies)
+    allProxies = importedProxies.split("\n");
+    // console.log(allProxies)
     } catch (error) {
         console.log(error);
     }
@@ -58,8 +61,6 @@ let start = async (email, proxy) => {
     console.log({proxyHostPort, proxyUserName, proxyPassword})
 
     console.log("==> Starting Browser")
-
-    console.time('Request time:')
 
     console.log("==> Adding Proxy")
 
@@ -115,24 +116,28 @@ let start = async (email, proxy) => {
     console.log("==> Email submitted")
     
 
-    console.timeEnd('Request time:')
-
-    await browser.close()
+    // await browser.close()
 
     }
 
 
 
-try {
-    start('','')
-} catch (error) {
-    console.log('we had an error')
-    console.log("keep executing")
+// try {
+//     start('','')
+// } catch (error) {
+//     console.log('we had an error')
+//     console.log("keep executing")
+// }
+const exampleProxy = ''
+const btStart = () => {
+    proxyLength = allProxies.length()
+    for (let index = 0; index < allData.length; index++) {
+        const email = allData[index]
+        console.time('Request time:')
+        start(email, exampleProxy)        
+        console.timeEnd('Request time:')
+
+    }
 }
 
-// const btStart = () => {
-//     for (let index = 0; index < array.length; index++) {
-//         const element = array[index];
-        
-//     }
-// }
+btStart()
