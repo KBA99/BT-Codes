@@ -7,6 +7,6 @@ Do npm install to install all dependencies
 .env example
 ```
   proxy=host:port
-  sername=username
+  username=username
   password=password
 ```

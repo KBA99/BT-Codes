@@ -42,7 +42,7 @@ const importEmails = async ()=> {
     }
 }
 
-const importProxies = ()=> {
+const importProxies = async () => {
     try {
         const importedProxies = fs.readFileSync(proxies, "utf8");
         console.log(`Proxies imported`);
@@ -109,9 +109,7 @@ const startBot = async (email, proxy) => {
     await page.goto('https://shop.bt.com/forms/playstation-5')
     
     console.log("==> On BT Page")
-    
-    console.log("==> Waiting for cookie selector")
-    
+        
     await page.waitForSelector(btPage.cookieBanner)
 
     console.log("==> Found cookie selector")
@@ -120,11 +118,11 @@ const startBot = async (email, proxy) => {
 
     console.log("==> Closed cookie banner")
     
-    console.log("==> Searching for email selector")
     await page.waitForSelector(btPage.emailAddress)
 
     console.log("==> Entering Email")
     await page.type(btPage.emailAddress, email)
+
     await page.click(btPage.submit)
     console.log("==> Email submitted")
     
@@ -138,8 +136,7 @@ const btStart = async () => {
     
 
     await importEmails();
-    importProxies();
-    importProxies();
+    await importProxies();
 
     for (let index = 0; index < allData.length; index++) {
         const email = allData[index]
@@ -150,5 +147,7 @@ const btStart = async () => {
 
     }
 }
+
+
 
 btStart()
