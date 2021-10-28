@@ -26,32 +26,45 @@ const enterSuccessEmail = (email) => {
     console.log('\x1b[32m%s\x1b[0m', `${email} successfully entered`);
 };
 
-try {
-    const importedEmails = fs.readFileSync(emails, "utf8");
-    fs.appendFile(successfullyEntered, `\n${new Date()}\n`, function (err) {
-        if (err) console.log(err);
-    });
-    console.log(`Appended date ${new Date()} to Success file`)
-    
-    allData = importedEmails.split("\n");
-    // console.log(allData)
+const importEmails = async ()=> {
+    try {
+        const importedEmails = fs.readFileSync(emails, "utf8");
+        fs.appendFile(successfullyEntered, `\n${new Date()}\n`, function (err) {
+            if (err)
+                console.log(err);
+        });
+        console.log(`Appended date ${new Date()} to Success file`);
+
+        allData = importedEmails.split("\n");
+        // console.log(allData)
     } catch (error) {
         console.log(error);
     }
+}
 
-try {
-    const importedProxies = fs.readFileSync(proxies, "utf8");
-    console.log(`Proxies imported`)
-    
-    allProxies = importedProxies.split("\n");
-    // console.log(allProxies)
+const importProxies = ()=> {
+    try {
+        const importedProxies = fs.readFileSync(proxies, "utf8");
+        console.log(`Proxies imported`);
+
+        allProxies = importedProxies.split("\n");
+        // console.log(allProxies)
     } catch (error) {
         console.log(error);
     }
+}
 
 
+const randomProxyGenerator =() => {
+    const proxyLength = allProxies.length
+    const getRandomInt = Math.floor(Math.random() * proxyLength)
+    const randomProxy = allProxies[getRandomInt]
+    console.log(`==> running script at proxy: ${randomProxy}`)
+    return randomProxy
+}
 
-let startBot = async (email, proxy) => {
+
+const startBot = async (email, proxy) => {
     const split_proxy = proxy.split(":")
 
     const proxyHostPort = `--proxy-server=${split_proxy[0]}:${split_proxy[1]}`
@@ -65,7 +78,7 @@ let startBot = async (email, proxy) => {
     console.log("==> Adding Proxy")
 
     const browser = await puppeteer.launch({
-        headless: false, slowMo: 50,
+        headless: true, slowMo: 50,
         args: [proxyHostPort]
     });
 
@@ -121,24 +134,12 @@ let startBot = async (email, proxy) => {
     }
 
 
-
-// try {
-//     start('','')
-// } catch (error) {
-//     console.log('we had an error')
-//     console.log("keep executing")
-// }
-
-const randomProxyGenerator =() => {
-    const proxyLength = allProxies.length
-    const getRandomInt = Math.floor(Math.random() * proxyLength)
-    const randomProxy = allProxies[getRandomInt]
-    console.log(`==> running script at proxy: ${randomProxy}`)
-    return randomProxy
-}
-
 const btStart = async () => {
     
+
+    await importEmails();
+    importProxies();
+    importProxies();
 
     for (let index = 0; index < allData.length; index++) {
         const email = allData[index]
