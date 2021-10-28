@@ -1,18 +1,14 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import fs from 'fs'
 import dotenv from 'dotenv'
 dotenv.config()
 
 puppeteer.use(StealthPlugin())
-// puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const emails = "src/emails.txt";
 const successfullyEntered = "src/successfullyEntered.txt";
 const proxies = "src/proxies.txt"
-
-const emailAddress = 'test@ukfastprime.com'
 
 const btPage = {
     emailAddress: "#EmailAddress",
@@ -52,22 +48,30 @@ try {
 
 
 
-let start = async () => {
+let start = async (email, proxy) => {
+    const split_proxy = proxy.split(":")
+    console.log(split_proxy)
+    const proxyHostPort = `--proxy-server=${split_proxy[0]}:${split_proxy[1]}`
+    const proxyUserName = `${split_proxy[2]}`
+    const proxyPassword = `${split_proxy[3]}`
+
+    console.log({proxyHostPort, proxyUserName, proxyPassword})
 
     console.log("==> Starting Browser")
 
     console.time('Request time:')
 
     console.log("==> Adding Proxy")
+
     const browser = await puppeteer.launch({
         headless: false, slowMo: 50,
-        args: [process.env.proxy]
+        args: [proxyHostPort]
     });
 
     const page = await browser.newPage();
         await page.authenticate({
-        username: process.env.username,
-        password: process.env.password
+        username: proxyUserName,
+        password: proxyPassword
         });
 
     console.log("==> Proxy Added")
@@ -77,16 +81,10 @@ let start = async () => {
 
 
     /* Tests
-        console.log(`Testing adblocker plugin..`)
-        await page.goto('https://www.vanityfair.com')
-        await page.waitForTimeout(1000)
-        await page.screenshot({ path: 'adblocker.png', fullPage: true })
-
         console.log(`Testing the stealth plugin..`)
         await page.goto('https://bot.sannysoft.com')
         await page.waitForTimeout(5000)
         await page.screenshot({ path: 'stealth.png', fullPage: true })
-
     //   console.log(`All done, check the screenshots. ✨`)
     */
 
@@ -112,7 +110,7 @@ let start = async () => {
     await page.waitForSelector(btPage.emailAddress)
 
     console.log("==> Entering Email")
-    await page.type(btPage.emailAddress, emailAddress)
+    await page.type(btPage.emailAddress, email)
     await page.click(btPage.submit)
     console.log("==> Email submitted")
     
@@ -125,10 +123,16 @@ let start = async () => {
 
 
 
-// try {
-//     start()
-// } catch (error) {
-//     console.log('we had an error')
-//     console.log("keep executing")
+try {
+    start('','')
+} catch (error) {
+    console.log('we had an error')
+    console.log("keep executing")
+}
 
+// const btStart = () => {
+//     for (let index = 0; index < array.length; index++) {
+//         const element = array[index];
+        
+//     }
 // }
