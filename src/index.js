@@ -10,6 +10,7 @@ puppeteer.use(StealthPlugin())
 
 const emails = "src/emails.txt";
 const successfullyEntered = "src/successfullyEntered.txt";
+const proxies = "src/proxies.txt"
 
 const emailAddress = 'test@ukfastprime.com'
 
@@ -35,6 +36,16 @@ try {
     
     let allData = importedEmails.split("\n");
     console.log(allData)
+    } catch (error) {
+        console.log(error);
+    }
+
+try {
+    const importedProxies = fs.readFileSync(proxies, "utf8");
+    console.log(`Proxies imported`)
+    
+    let allProxies = importedProxies.split("\n");
+    console.log(allProxies)
     } catch (error) {
         console.log(error);
     }
@@ -114,10 +125,10 @@ let start = async () => {
 
 
 
-try {
-    start()
-} catch (error) {
-    console.log('we had an error')
-    console.log("keep executing")
+// try {
+//     start()
+// } catch (error) {
+//     console.log('we had an error')
+//     console.log("keep executing")
 
-}
+// }

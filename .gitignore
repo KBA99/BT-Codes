@@ -2,3 +2,4 @@ node_modules
 src/successfullyEntered.txt
 src/emails.txt
 .env
+src/proxies.txt
