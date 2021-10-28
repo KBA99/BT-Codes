@@ -53,12 +53,12 @@ try {
 
 let start = async (email, proxy) => {
     const split_proxy = proxy.split(":")
-    console.log(split_proxy)
+
     const proxyHostPort = `--proxy-server=${split_proxy[0]}:${split_proxy[1]}`
     const proxyUserName = `${split_proxy[2]}`
     const proxyPassword = `${split_proxy[3]}`
 
-    console.log({proxyHostPort, proxyUserName, proxyPassword})
+
 
     console.log("==> Starting Browser")
 
@@ -128,14 +128,24 @@ let start = async (email, proxy) => {
 //     console.log('we had an error')
 //     console.log("keep executing")
 // }
-const exampleProxy = ''
+
+const randomProxyGenerator =() => {
+    const proxyLength = allProxies.length
+    const getRandomInt = Math.floor(Math.random() * proxyLength)
+    const randomProxy = allProxies[getRandomInt]
+    console.log(`==> running script at proxy: ${randomProxy}`)
+    return randomProxy
+}
+
 const btStart = () => {
-    proxyLength = allProxies.length()
+    
+
     for (let index = 0; index < allData.length; index++) {
         const email = allData[index]
-        console.time('Request time:')
-        start(email, exampleProxy)        
-        console.timeEnd('Request time:')
+        // FIXME: timer
+        // console.time('Request time:')
+        start(email, randomProxyGenerator())        
+        // console.timeEnd('Request time:')
 
     }
 }
