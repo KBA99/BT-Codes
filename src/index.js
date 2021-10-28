@@ -19,7 +19,7 @@ const btPage = {
     cookieBanner: '#spanAboutCookiesOk > button'
 }
 
-let successEnter = (email) => {
+const enterSuccessEmail = (email) => {
     fs.appendFile(successfullyEntered, `${email}}\n`, function (err) {
         if (err) console.log(err);
     });
@@ -51,7 +51,7 @@ try {
 
 
 
-let start = async (email, proxy) => {
+let startBot = async (email, proxy) => {
     const split_proxy = proxy.split(":")
 
     const proxyHostPort = `--proxy-server=${split_proxy[0]}:${split_proxy[1]}`
@@ -115,8 +115,8 @@ let start = async (email, proxy) => {
     await page.click(btPage.submit)
     console.log("==> Email submitted")
     
-
-    // await browser.close()
+    enterSuccessEmail(email)
+    await browser.close()
 
     }
 
@@ -137,14 +137,14 @@ const randomProxyGenerator =() => {
     return randomProxy
 }
 
-const btStart = () => {
+const btStart = async () => {
     
 
     for (let index = 0; index < allData.length; index++) {
         const email = allData[index]
         // FIXME: timer
         // console.time('Request time:')
-        start(email, randomProxyGenerator())        
+        await startBot(email, randomProxyGenerator())               
         // console.timeEnd('Request time:')
 
     }
