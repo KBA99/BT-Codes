@@ -2,7 +2,8 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import AdblockerPlugin from 'puppeteer-extra-plugin-adblocker'
 import fs from 'fs'
-import useProxy from 'puppeteer-page-proxy'
+import dotenv from 'dotenv'
+dotenv.config()
 
 puppeteer.use(StealthPlugin())
 // puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
@@ -42,20 +43,26 @@ try {
 
 let start = async () => {
 
-            console.log("==> Starting Browser")
+    console.log("==> Starting Browser")
 
-    // Add adblocker plugin to block all ads and trackers (saves bandwidth)
-    // That's it, the rest is puppeteer usage as normal 😊
-        console.time('Request time:')
+    console.time('Request time:')
 
-        const browser = await puppeteer.launch(
-            {headless: false, slowMo: 50},
-            {args: ['--proxy-server=zproxy.lum-superproxy.io:22225']}
-            )
+    console.log("==> Adding Proxy")
+    const browser = await puppeteer.launch({
+        headless: false, slowMo: 50,
+        args: [process.env.proxy]
+    });
 
+    const page = await browser.newPage();
+        await page.authenticate({
+        username: process.env.username,
+        password: process.env.password
+        });
 
-        const page = await browser.newPage()
-        await page.setViewport({ width: 800, height: 600 })
+    console.log("==> Proxy Added")
+
+    await page.setViewport({ width: 900, 
+                             height: 600 })
 
 
     /* Tests
@@ -72,48 +79,45 @@ let start = async () => {
     //   console.log(`All done, check the screenshots. ✨`)
     */
 
-    console.log("==> Adding Proxy")
-
-
-    // await useProxy(page, 'http://127.0.0.1:24000');
-    console.log("==> Proxy Added")
 
     
-    // const data = await useProxy.lookup(page);
-    // console.log(data.ip);
-
     console.log("==> Navigating to Page")
 
     await page.goto('https://shop.bt.com/forms/playstation-5')
     
     console.log("==> On BT Page")
     
-    await page.setViewport({ width: 1280, height: 1306 })
+    console.log("==> Waiting for cookie selector")
+    
+    await page.waitForSelector(btPage.cookieBanner)
 
-        console.log("==> Waiting for cookie selector")
-        
-        await page.waitForSelector(btPage.cookieBanner)
+    console.log("==> Found cookie selector")
 
-        console.log("==> Found cookie selector")
+    await page.click(btPage.cookieBanner)
 
-        await page.click(btPage.cookieBanner)
+    console.log("==> Closed cookie banner")
+    
+    console.log("==> Searching for email selector")
+    await page.waitForSelector(btPage.emailAddress)
 
-        console.log("==> Closed cookie banner")
-        
-        console.log("==> Searching for email selector")
-        await page.waitForSelector(btPage.emailAddress)
+    console.log("==> Entering Email")
+    await page.type(btPage.emailAddress, emailAddress)
+    await page.click(btPage.submit)
+    console.log("==> Email submitted")
+    
 
-        console.log("==> Entering Email")
-        await page.type(btPage.emailAddress, emailAddress)
-        await page.click(btPage.submit)
-        console.log("==> Email submitted")
-        
+    console.timeEnd('Request time:')
 
-        console.timeEnd('Request time:')
-
-        await browser.close()
+    await browser.close()
 
     }
 
 
-start()
+
+try {
+    start()
+} catch (error) {
+    console.log('we had an error')
+    console.log("keep executing")
+
+}
