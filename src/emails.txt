@@ -1,4 +1,0 @@
-test1@testmail.com
-test2@testmail.com
-test3@testmail.com
-test4@testmail.com
