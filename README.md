@@ -20,3 +20,9 @@ src
 |--successfullyEntered.txt
 
 ```
+
+Set headless to false if you want to run in backgroud (line 75)
+---
+
+`Expected proxies are HTTP, host:port:user:password`
+If no proxies are used, the bot will still run
