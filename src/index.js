@@ -7,9 +7,6 @@ dotenv.config()
 
 puppeteer.use(StealthPlugin())
 
-let openBrowsers = 0
-const BROWSER_LIMIT = 5
-
 const emails = "src/emails.txt";
 const successfullyEntered = "src/successfullyEntered.txt";
 const proxies = "src/proxies.txt"

@@ -10,3 +10,13 @@ Do npm install to install all dependencies
   username=username
   password=password
 ```
+
+src file setup
+---
+```
+src
+|--emails.txt
+|--proxies.txt
+|--successfullyEntered.txt
+
+```
