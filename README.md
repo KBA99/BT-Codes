@@ -1,6 +1,8 @@
 Do npm install to install all dependencies
 ===
 
+Do `npm run start` to start the script
+
 - Add a proxies.txt to `src/proxies.txt` file
 - Add a emails.txt to `src/emails.txt` file
 
@@ -20,7 +22,7 @@ Set headless to false if you want to run in backgroud (line 75)
 ---
 
 `Expected proxies are HTTP, host:port:user:password`
-If no proxies are used, the bot will still run
+If no proxies are used, the bot will still not run
 
 ### Debugging with .env files
 - Add a .env file to the root of the file
