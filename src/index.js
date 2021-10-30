@@ -7,9 +7,6 @@ dotenv.config()
 
 puppeteer.use(StealthPlugin())
 
-let openBrowsers = 0
-const BROWSER_LIMIT = 5
-
 const emails = "src/emails.txt";
 const successfullyEntered = "src/successfullyEntered.txt";
 const proxies = "src/proxies.txt"
@@ -30,7 +27,7 @@ const enterSuccessEmail = (email, index) => {
     console.log('\x1b[32m%s\x1b[0m', `${index}: ${email} successfully entered`);
 };
 
-const importEmails = async ()=> {
+const importEmails = async () => {
     try {
         const importedEmails = fs.readFileSync(emails, "utf8");
         fs.appendFile(successfullyEntered, `\n${new Date()}\n`, function (err) {
@@ -49,15 +46,12 @@ const importEmails = async ()=> {
 const importProxies = async () => {
     try {
         const importedProxies = fs.readFileSync(proxies, "utf8");
-        console.log(`Proxies imported`);
-
         allProxies = importedProxies.split("\n");
-        // console.log(allProxies)
+        console.log(`${allProxies.length} proxies imported`)
     } catch (error) {
         console.log(error);
     }
 }
-
 
 const randomProxyGenerator =() => {
     const proxyLength = allProxies.length
@@ -67,7 +61,6 @@ const randomProxyGenerator =() => {
     return randomProxy
 }
 
-
 const startBot = async (email, proxy, index) => {
     console.time(`Thread ${index} Request time:`)
 
@@ -76,8 +69,6 @@ const startBot = async (email, proxy, index) => {
     const proxyHostPort = `--proxy-server=${split_proxy[0]}:${split_proxy[1]}`
     const proxyUserName = `${split_proxy[2]}`
     const proxyPassword = `${split_proxy[3]}`
-
-
 
     console.log("==> Starting Browser")
     const browser = await puppeteer.launch({
@@ -97,7 +88,6 @@ const startBot = async (email, proxy, index) => {
     await page.setViewport({ width: 900, 
                              height: 600 })
 
-
     /* Tests
         console.log(`Testing the stealth plugin..`)
         await page.goto('https://bot.sannysoft.com')
@@ -106,14 +96,12 @@ const startBot = async (email, proxy, index) => {
     //   console.log(`All done, check the screenshots. ✨`)
     */
 
-
-    
     console.log("==> Navigating to Page")
 
     await page.goto('https://shop.bt.com/forms/playstation-5')
-    
+
     console.log("==> On BT Page")
-        
+
     await page.waitForSelector(btPage.cookieBanner)
 
     console.log("==> Found cookie selector")
@@ -121,7 +109,7 @@ const startBot = async (email, proxy, index) => {
     await page.click(btPage.cookieBanner)
 
     console.log("==> Closed cookie banner")
-    
+
     await page.waitForSelector(btPage.emailAddress)
 
     console.log("==> Entering Email")
@@ -129,7 +117,7 @@ const startBot = async (email, proxy, index) => {
 
     await page.click(btPage.submit)
     console.log("==> Email submitted")
-    
+
     enterSuccessEmail(email, index)
     await browser.close()
 
